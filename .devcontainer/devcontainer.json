@@ -1,5 +1,5 @@
 {
-	"name": "n8n",
+	"name": "n8n_rebel",
 	"dockerComposeFile": "docker-compose.yml",
 	"service": "n8n",
 	"workspaceFolder": "/workspaces",
@@ -9,7 +9,7 @@
 		"type=bind,source=${localEnv:HOME}/.n8n,target=/home/node/.n8n,consistency=cached"
 	],
 	"forwardPorts": [8080, 5678],
-	"postCreateCommand": "corepack prepare --activate && pnpm install",
+	"postCreateCommand": "set -x && chown -R node:node /workspaces /home/node && corepack prepare --activate && pnpm install --yes",
 	"postAttachCommand": "pnpm build",
 	"customizations": {
 		"codespaces": {
