@@ -3,14 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    env_file:
+      - ./.env
     volumes:
       - ..:/workspaces:cached
     command: sleep infinity
-    environment:
-      DB_POSTGRESDB_HOST: <host>
-      DB_TYPE: postgresdb
-      DB_POSTGRESDB_PASSWORD: <pass>
-      DB_POSTGRESDB_DATABASE: <db>
-      DB_POSTGRESDB_PORT: 5432
-      DB_POSTGRESDB_USER: <user>
-      DB_POSTGRESDB_SSL_REJECT_UNAUTHORIZED: false
