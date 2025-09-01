@@ -3,7 +3,7 @@ set -euo pipefail
 
 
 OUT_DIR="$(pwd)/Packs"
-REMOTE="$(DEPLOYMENT_USER)@$(DEPLOYMENT_HOST)"
+REMOTE="${DEPLOYMENT_USER}@${DEPLOYMENT_HOST}"
 
 # ── 1. build all workspaces we’re about to publish ─────────────────────
 pnpm build
@@ -45,7 +45,5 @@ for TGZ in "$OUT_DIR"/*.tgz; do
   cat "$TGZ" | ssh "$REMOTE" "cat > ${DEPLOYMENT_FOLDER}$FILE_NAME"
 done
 
-echo "✅ All tarballs uploaded to ~/workspace on Replit."
-echo "On Replit run:  pnpm i -g ~/workspace/Packs/*.tgz"
+echo "✅ All tarballs uploaded to ${DEPLOYMENT_FOLDER} on ${DEPLOYMENT_HOST}."
 
-echo "✅  All n8n packages published to GitHub Packages"
