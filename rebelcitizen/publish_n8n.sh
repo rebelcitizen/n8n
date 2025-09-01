@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# ── sanity ─────────────────────────────────────────────────────────────
-#test -n "${GH_NPM_TOKEN:-}" \
-#  || { echo "❌  GH_NPM_TOKEN not set"; exit 1; }
+
+OUT_DIR="$(pwd)/Packs"
+REMOTE="$(DEPLOYMENT_USER)@$(DEPLOYMENT_HOST)"
 
 # ── 1. build all workspaces we’re about to publish ─────────────────────
 pnpm build
@@ -17,7 +17,6 @@ echo "Will start publishing packages"
 MARKER="$(mktemp)"
 touch "$MARKER"
 
-
 pnpm pack -r --filter "./packages/**"
 
 # ── 3. publish every package that has "private": false ─────────────────
@@ -25,7 +24,7 @@ pnpm pack -r --filter "./packages/**"
 #pnpm publish -r --filter "./packages/**" --access=restricted  --no-git-checks --reporter default --dry-run --force
 
 # ── 2. move all .tgz files created *after* the marker into ./Packs ────────────
-OUT_DIR="./Packs"
+#OUT_DIR="./Packs"
 rm -rf "$OUT_DIR" && mkdir -p "$OUT_DIR"
 
 find . -type f -name '*.tgz' -newer "$MARKER" -print0 \
@@ -36,19 +35,14 @@ find . -type f -name '*.tgz' -newer "$MARKER" -print0 \
 
 rm "$MARKER"
 
-OUT_DIR="$(pwd)/Packs"
-REMOTE="d2ff2da2-c9fd-4d28-ab8e-ce4c3836561d@d2ff2da2-c9fd-4d28-ab8e-ce4c3836561d-00-3ume8ota3cp83.riker.replit.dev"
-SSH_KEY="~/.ssh/replit_staging"
 
 # 1 · ensure a clean target dir
-ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no "$REMOTE" \
-  'rm -rf ~/workspace/PACKS && mkdir -p ~/workspace/PACKS'
+ssh "$REMOTE" "rm -rf ${DEPLOYMENT_FOLDER} && mkdir -p ${DEPLOYMENT_FOLDER}"
 
 for TGZ in "$OUT_DIR"/*.tgz; do
   FILE_NAME=$(basename "$TGZ")
   echo "🚚  Uploading $FILE_NAME …"
-  cat "$TGZ" | ssh -i "$SSH_KEY" -o StrictHostKeyChecking=no \
-       "$REMOTE" "cat > ~/workspace/PACKS$FILE_NAME"
+  cat "$TGZ" | ssh "$REMOTE" "cat > ${DEPLOYMENT_FOLDER}$FILE_NAME"
 done
 
 echo "✅ All tarballs uploaded to ~/workspace on Replit."

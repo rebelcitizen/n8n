@@ -47,7 +47,8 @@
     "test:show:report": "pnpm --filter=n8n-playwright exec playwright show-report",
     "watch": "turbo run watch",
     "webhook": "./packages/cli/bin/n8n webhook",
-    "worker": "./packages/cli/bin/n8n worker"
+    "worker": "./packages/cli/bin/n8n worker",
+    "rebel_publish": "bash ./rebelcitizen/publish_n8n.sh"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.0",
