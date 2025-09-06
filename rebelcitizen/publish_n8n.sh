@@ -2,7 +2,7 @@
 set -euo pipefail
 
 
-OUT_DIR="$(pwd)/Packs"
+OUT_DIR="$(pwd)/artifacts"
 REMOTE="${DEPLOYMENT_USER}@${DEPLOYMENT_HOST}"
 
 # ── 1. build all workspaces we’re about to publish ─────────────────────
@@ -42,7 +42,7 @@ ssh "$REMOTE" "rm -rf ${DEPLOYMENT_FOLDER} && mkdir -p ${DEPLOYMENT_FOLDER}"
 for TGZ in "$OUT_DIR"/*.tgz; do
   FILE_NAME=$(basename "$TGZ")
   echo "🚚  Uploading $FILE_NAME …"
-  cat "$TGZ" | ssh "$REMOTE" "cat > ${DEPLOYMENT_FOLDER}$FILE_NAME"
+  cat "$TGZ" | ssh "$REMOTE" "cat > ${DEPLOYMENT_FOLDER}/$FILE_NAME"
 done
 
 echo "✅ All tarballs uploaded to ${DEPLOYMENT_FOLDER} on ${DEPLOYMENT_HOST}."
